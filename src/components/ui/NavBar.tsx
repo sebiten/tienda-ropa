@@ -1,57 +1,55 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ModeToggle } from "./toggle-darkmode";
 
 export default function NavBar() {
   return (
-    <div className="sticky top-0 z-50">
-      <nav className="md:flex justify-between w-full py-6 px-4 text-lg bg-[#070c1a] border-b">
-        <div>
+    <div className="sticky top-0 z-50 bg-inherit border-b">
+      <nav className="md:flex justify-between w-full py-6 px-10 text-lg bg-transparent">
+        <div className="flex items-center">
           <Link className="flex items-center justify-center" href="/">
-            <Image
-              alt="piclheria online"
-              width={60}
-              height={60}
-              src="/pilcheria-logo.png"
-            ></Image>
-            <p className="uppercase bg-gradient-to-r text-transparent bg-clip-text from-lime-200 to-lime-600 font-black">
+            <p className="uppercase font-bold bg-gradient-to-r text-transparent bg-clip-text from-lime-600 to-purple-800">
               Pilcheria Online
             </p>
           </Link>
         </div>
         <div className="w-full md:w-auto" id="menu">
-          <ul className="gap-4 flex justify-center text-gray-300 font-bold font-sans uppercase text-lg py-4">
-            <li>
-              <Link
-                className="block hover:text-blue-950 hover:scale-95"
-                href="#"
-              >
-                Features
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="block hover:text-blue-950 hover:scale-95"
-                href="#"
-              >
-                Pricing
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="block hover:text-blue-950 hover:scale-95"
-                href="#"
-              >
-                Customers
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="block hover:text-blue-950 hover:scale-95"
-                href="#"
-              >
-                Blog
-              </Link>
-            </li>
+          <ul className="flex gap-4  font-sans uppercase text-lg py-4">
+            <ModeToggle />
+            <div className="bg-gradient-to-r flex gap-4  justify-center text-transparent bg-clip-text from-lime-600 to-purple-800 font-bold">
+              <li>
+                <Link
+                  className="block hover:text-gray-200 hover:scale-95"
+                  href="#"
+                >
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="block hover:text-gray-200 hover:scale-95"
+                  href="#"
+                >
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="block hover:text-gray-200 hover:scale-95"
+                  href="#"
+                >
+                  Customers
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="block hover:text-gray-200 hover:scale-95"
+                  href="#"
+                >
+                  Blog
+                </Link>
+              </li>
+            </div>
           </ul>
         </div>
       </nav>

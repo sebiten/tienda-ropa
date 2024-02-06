@@ -9,11 +9,6 @@ export default function Home() {
       <Carrousel />
       <main>
         <Prendas />
-        <Prendas />
-
-        <Prendas />
-
-        <Prendas />
 
       </main>
     </>

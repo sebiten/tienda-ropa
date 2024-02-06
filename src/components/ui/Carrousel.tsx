@@ -9,28 +9,21 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
-import pathsDeImagenes from "@/constantes/constantes";
+import { pathsDeImagenes } from "@/constantes/constantes";
 
 export default function Carrousel() {
   return (
     <section className="lg:flex items-center justify-center">
       <div className="">
-        <Image
-          alt="pilcheria-online"
-          width={540}
-          height={500}
-          src="/pilcheria-logo.png"
-          className="mx-auto mb-10"
-        ></Image>
-        {/* <h1 className="text-center text-2xl font-bold uppercase font-sans   ">
-          <span className="bg-gradient-to-r text-transparent bg-clip-text from-lime-200 to-lime-600">
+        <h1 className="text-center text-2xl font-bold uppercase font-sans   ">
+          <span className="bg-gradient-to-r text-transparent bg-clip-text from-lime-600 to-purple-800">
             Bienvenidos a pilcheria online <br></br>
           </span>
-        </h1> */}
-        {/* <p className="text-center  text-lg max-w-xl mx-auto font-normal -mt-20">
+        </h1>
+        <p className="text-center  text-lg max-w-lg px-10 mx-auto font-normal">
           Aca encontraras ropa de distintas variedades para hombres, tanto
           nuevas como usadas y lo mejor? A un precio excelente. 👋
-        </p> */}
+        </p>
       </div>
       <Carousel
         opts={{ align: "start", loop: true }}
@@ -45,8 +38,7 @@ export default function Carrousel() {
                 width={1920}
                 height={1080}
                 alt={`Imagen ${index + 1}`}
-                priority={true}
-                className="mx-auto aspect-video w-full rounded-lg"
+                className="mx-auto aspect-video w-full rounded-3xl"
               />
             </CarouselItem>
           ))}
