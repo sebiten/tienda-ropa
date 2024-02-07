@@ -1,10 +1,9 @@
 import Carrousel from "@/components/ui/Carrousel";
-import NavBar from "@/components/ui/NavBar";
 import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 
-const supabaseAdmin = createClient(
+export const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_PROYECT_URL || "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 );
@@ -16,16 +15,13 @@ export default async function Home() {
     .order("id");
   if (error) {
     console.log(error);
-  } else {
-    console.log(prenda);
   }
 
   return (
     <>
-      <NavBar />
       <Carrousel />
       <main>
-        <div className="grid grid-cols-3 gap-4 justify-center items-center max-w-5xl mx-auto">
+        <div className="grid grid-cols-3 gap-4 justify-center place-content-center plac items-center max-w-5xl mx-auto">
           {prenda?.map((item): any => (
             <Link
               href={`/${item.id}`}

@@ -22,7 +22,7 @@ export default function NavBar() {
                   className="block hover:text-gray-200 hover:scale-95"
                   href="#"
                 >
-                  Features
+                  Tienda
                 </Link>
               </li>
               <li>
@@ -30,7 +30,7 @@ export default function NavBar() {
                   className="block hover:text-gray-200 hover:scale-95"
                   href="#"
                 >
-                  Pricing
+                  Usados
                 </Link>
               </li>
               <li>
@@ -38,7 +38,7 @@ export default function NavBar() {
                   className="block hover:text-gray-200 hover:scale-95"
                   href="#"
                 >
-                  Customers
+                  Contacto
                 </Link>
               </li>
               <li>
