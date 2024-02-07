@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
+import { log } from "console";
 
 export default async function Page({ params }: any) {
   async function create(formData: FormData) {
     "use server";
-    const productId = params;
-
+    const id = params.id;
+    console.log(id);
   }
 
   const { data, error } = await supabaseAdmin
@@ -19,6 +20,7 @@ export default async function Page({ params }: any) {
   if (error) {
     console.log(error);
   }
+
   return (
     <section className="flex items-center justify-center">
       <div className="grid grid-cols-1 gap-8 ">
@@ -36,15 +38,11 @@ export default async function Page({ params }: any) {
               alt={item.name}
               className="rounded-lg shadow-md object-cover w-full h-48 mx-auto mb-4"
             />
-            <form>
+            <form action={create}>
               <p className="text-xl font-semibold mb-2">{item.name}</p>
               <p className="text-gray-500 text-sm mb-2">{item.created_at}</p>
               <p className="text-gray-700 text-sm mb-4">{item.description}</p>
-              <Button
-                type="submit"
-                action={create(params)}
-                className="hover:underline"
-              >
+              <Button type="submit" className="hover:underline">
                 Agregar al Carrito
               </Button>
             </form>

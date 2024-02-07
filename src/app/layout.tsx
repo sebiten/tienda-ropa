@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavBar from "@/components/ui/NavBar";
-const inter = Inter({ subsets: ["latin"] });
+import { inter, siteFont } from "./config/fonts";
 
 export const metadata: Metadata = {
   title: "Pilcheria online",
@@ -17,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={siteFont.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
