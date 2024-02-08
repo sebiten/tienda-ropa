@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { pathsDeImagenes } from "@/constantes/constantes";
+import { siteFont } from "@/app/config/fonts";
 
 export default function Carrousel() {
   return (
@@ -17,7 +18,8 @@ export default function Carrousel() {
       <div className="mr-7">
         <h1 className="text-center text-4xl font-bold uppercase font-sans   ">
           <span className="bg-gradient-to-r text-transparent bg-clip-text from-lime-600 to-purple-800">
-            Bienvenidos a pilcheria online
+            <span className={siteFont.className}>Bienvenidos a pilcheria online</span>
+
           </span>
         </h1>
         <p className="text-center text-lg mx-auto font-normal mt-4">

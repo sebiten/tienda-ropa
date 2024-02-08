@@ -1,10 +1,11 @@
 import React from "react";
-import { supabaseAdmin } from "@/app/page";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import { log } from "console";
+import { supabaseAdmin } from "@/components/ui/ShopListPage";
 
 export default async function Page({ params }: any) {
   async function create(formData: FormData) {
