@@ -14,12 +14,12 @@ export default function NavBar() {
           </Link>
         </div>
         <div className="w-full md:w-auto" id="menu">
-          <ul className="flex gap-4  font-sans uppercase text-lg py-4">
+          <ul className="flex gap-4  uppercase text-lg py-4">
             <ModeToggle />
             <div className="bg-gradient-to-r flex gap-4  justify-center ">
               <li>
                 <Link
-                  className="block hover:text-gray-200 hover:scale-95"
+                  className="block hover:text-gray-400 hover:scale-95"
                   href="/tienda"
                 >
                   Tienda
@@ -27,7 +27,7 @@ export default function NavBar() {
               </li>
               <li>
                 <Link
-                  className="block hover:text-gray-200 hover:scale-95"
+                  className="block hover:text-gray-400 hover:scale-95"
                   href="#"
                 >
                   Usados
@@ -35,7 +35,7 @@ export default function NavBar() {
               </li>
               <li>
                 <Link
-                  className="block hover:text-gray-200 hover:scale-95"
+                  className="block hover:text-gray-400 hover:scale-95"
                   href="#"
                 >
                   Contacto
@@ -43,7 +43,7 @@ export default function NavBar() {
               </li>
               <li>
                 <Link
-                  className="block hover:text-gray-200 hover:scale-95"
+                  className="block hover:text-gray-400 hover:scale-95"
                   href="#"
                 >
                   Blog

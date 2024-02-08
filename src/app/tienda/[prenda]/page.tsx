@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import getFormattedDate from "@/lib/utils";
-import Carrousel from "@/components/ui/Carrousel";
 
 export default async function Page({ params }: any) {
   async function create(formData: FormData) {
