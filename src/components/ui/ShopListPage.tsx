@@ -34,9 +34,9 @@ export default async function ShopListPage() {
   return (
     <div>
       <div className="grid grid-cols-3 gap-10 max-w-5xl mx-auto mt-20 ">
-        {prenda?.map((item): any => (
+        {prenda?.map((item) => (
           <Link
-            href={`/${item.id}`}
+            href={`/tienda/${item.id}`}
             key={item.id}
             className="border-t-8 border-s-8 border-b-8 border-r-8 m-0"
           >

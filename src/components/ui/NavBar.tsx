@@ -16,11 +16,11 @@ export default function NavBar() {
         <div className="w-full md:w-auto" id="menu">
           <ul className="flex gap-4  font-sans uppercase text-lg py-4">
             <ModeToggle />
-            <div className="bg-gradient-to-r flex gap-4  justify-center text-transparent bg-clip-text from-lime-600 to-purple-800 font-bold">
+            <div className="bg-gradient-to-r flex gap-4  justify-center ">
               <li>
                 <Link
                   className="block hover:text-gray-200 hover:scale-95"
-                  href="/shop"
+                  href="/tienda"
                 >
                   Tienda
                 </Link>
