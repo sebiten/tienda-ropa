@@ -1,8 +1,15 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./toggle-darkmode";
-
+import { TiShoppingCart } from "react-icons/ti";
+import { useAppContext } from "@/context";
 export default function NavBar() {
+  const { cartItems } = useAppContext();
+  const itemCount = cartItems.length;
+
+  console.log(itemCount);
+
   return (
     <div className="sticky top-0 z-50 bg-inherit border-b">
       <nav className="md:flex justify-between w-full py-6 px-10 text-lg bg-transparent">
@@ -47,6 +54,16 @@ export default function NavBar() {
                   href="#"
                 >
                   Blog
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="flex gap-4 items-center hover:text-gray-400 hover:scale-95"
+                  href="#"
+                >
+                  <TiShoppingCart />
+                  <p className="text-white">{itemCount}</p>
+                  Cart
                 </Link>
               </li>
             </div>

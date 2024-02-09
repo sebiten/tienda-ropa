@@ -1,36 +1,68 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { supabaseAdmin } from "@/components/ui/ShopListPage";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import getFormattedDate from "@/lib/utils";
+import supabase, { getFormattedDate } from "@/lib/utils";
+import { useAppContext } from "@/context";
 
-export default async function Page({ params }: any) {
-  async function create(formData: FormData) {
-    "use server";
-    const id = params.id;
-    console.log(id);
-  }
+export default function Page({ params }: any) {
+  const [data, setData] = useState<any>([]);
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const { cartItems, addToCart } = useAppContext();
+  console.log(cartItems);
 
-  const { data, error } = await supabaseAdmin
-    .from("prenda")
-    .select("*")
-    .eq("id", params.prenda);
-  if (error) {
-    console.log(error);
-  }
+  const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSize(event.target.value);
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const size = formData.get("size");
+
+    const itemId = params.prenda;
+
+    if (itemId && size) {
+      const itemExists = cartItems.some(
+        (item: any) => item.id === itemId && item.size === size
+      );
+
+      if (!itemExists) {
+        addToCart({ id: itemId, size: size });
+      }
+    }
+  };
+
+  const handleCartButton = () => {
+    const itemId = params.prenda;
+
+    if (itemId && selectedSize) {
+      const itemExists = cartItems.some(
+        (item: any) => item.id === itemId && item.size === selectedSize
+      );
+
+      if (!itemExists) {
+        addToCart({ id: itemId, size: selectedSize });
+      }
+    }
+  };
+
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const { data } = await supabase
+        .from("prenda")
+        .select("*")
+        .eq("id", params.prenda);
+      setData(data);
+    };
+
+    fetchPosts();
+  }, [params.prenda, setData]);
 
   return (
-    <section className="flex w-full items-center justify-center max-w-7xl mx-auto">
+    <section className="flex mt-10 w-full items-center justify-center max-w-7xl mx-auto">
       <div className="grid gap-8 items-center justify-center ">
         {data?.map((item: any) => (
           <div key={item.id} className="flex flex-initial gap-8 p-4 rounded-lg">
@@ -50,48 +82,49 @@ export default async function Page({ params }: any) {
               alt={item.name}
               className="rounded-lg shadow-md object-fit  mx-auto mb-4"
             />
-            <form action={create}>
+            <form onSubmit={handleSubmit}>
               <p className="text-xl font-semibold mb-2">{item.title}</p>
 
               <p className="text-gray-500 text-sm mb-2">
                 {getFormattedDate(item.created_at)}
               </p>
               <p className="text-gray-700 text-sm mb-4">{item.description}</p>
-              <div className="flex gap-2">
-                <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Selecciona un talle" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Fruits</SelectLabel>
-                      {item.sizes ? (
-                        <div className="text-xl font-semibold">
-                          {item.sizes
-                            .split(",")
-                            .map((size: string, index: string) => (
-                              <SelectItem key={index} value={size}>
-                                {size}
-                              </SelectItem>
-                            ))}
-                        </div>
-                      ) : (
-                        <p>No sizes available</p>
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <Button type="submit" className="hover:underline">
+              <div className="flex flex-col gap-2">
+                <select
+                  name="size"
+                  className="border p-2 rounded-md focus:outline-none focus:border-blue-500"
+                  onChange={handleSizeChange}
+                  value={selectedSize}
+                >
+                  <option value="" disabled>
+                    Selecciona un talle
+                  </option>
+                  {item.sizes ? (
+                    item.sizes.split(",").map((size: string, index: number) => (
+                      <option key={index} value={size}>
+                        {size}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      No hay tallas disponibles
+                    </option>
+                  )}
+                </select>
+                <Button
+                  type="button"
+                  onClick={handleCartButton}
+                  className="hover:underline"
+                >
                   Agregar al Carrito
                 </Button>
               </div>
-              <Button
+              {/* <Button
                 type="submit"
-                className="hover:underline w-[334px] mt-4
-              "
+                className="hover:underline w-full mt-2"
               >
                 Comprar directamente
-              </Button>
+              </Button> */}
             </form>
           </div>
         ))}

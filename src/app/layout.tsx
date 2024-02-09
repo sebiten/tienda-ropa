@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavBar from "@/components/ui/NavBar";
 import { Montserrat_Alternates } from "next/font/google";
+import { AppWrapper } from "@/context";
 
 export const metadata: Metadata = {
   title: "Pilcheria online",
@@ -12,7 +13,6 @@ const siteFont = Montserrat_Alternates({
   subsets: ["latin"],
   weight: ["500", "700"],
 });
-
 
 export default function RootLayout({
   children,
@@ -28,8 +28,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NavBar />
-          {children}
+          <AppWrapper>
+            <NavBar />
+            {children}
+          </AppWrapper>
         </ThemeProvider>
       </body>
     </html>
