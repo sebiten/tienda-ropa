@@ -4,50 +4,69 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import supabase, { getFormattedDate } from "@/lib/utils";
 import { useAppContext } from "@/context";
+import { CartItem, ItemData } from "@/types/types";
 
 export default function Page({ params }: any) {
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<ItemData[]>([]);
   const [selectedSize, setSelectedSize] = useState<string>("");
-  const { cartItems, addToCart } = useAppContext();
-  console.log(cartItems);
+  const { setCartItems, cartItems , setLoadingInitial} = useAppContext();
 
   const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSize(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const size = formData.get("size");
-
-    const itemId = params.prenda;
-
-    if (itemId && size) {
-      const itemExists = cartItems.some(
-        (item: any) => item.id === itemId && item.size === size
-      );
-
-      if (!itemExists) {
-        addToCart({ id: itemId, size: size });
-      }
-    }
-  };
-
   const handleCartButton = () => {
     const itemId = params.prenda;
+    const size = selectedSize;
 
-    if (itemId && selectedSize) {
-      const itemExists = cartItems.some(
-        (item: any) => item.id === itemId && item.size === selectedSize
+    if (!itemId || !size) {
+      console.error("Please select an item and size.");
+      return;
+    }
+
+    const existingItem: CartItem | undefined = cartItems.find(
+      (item: CartItem) => item.id === itemId && item.size === size
+    );
+
+    if (existingItem) {
+      setCartItems((prevCartItems: CartItem[]) =>
+        prevCartItems.map((item: CartItem) =>
+          item.id === itemId && item.size === size
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
       );
-
-      if (!itemExists) {
-        addToCart({ id: itemId, size: selectedSize });
-      }
+      console.log("Item quantity increased.");
+    } else {
+      setCartItems((prevCartItems: CartItem[]) => [
+        ...prevCartItems,
+        { id: itemId, size, quantity: 1 },
+      ]);
+      console.log("Item added to cart.");
     }
   };
 
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      try {
+        const parsedCartItems: CartItem[] = JSON.parse(storedCartItems);
+        setCartItems(parsedCartItems);
+      } catch (error) {
+        console.error("Error parsing cart items from localStorage:", error);
+      }
+    }
+
+    setLoadingInitial(false);
+  }, [setCartItems, setLoadingInitial]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    } catch (error) {
+      console.error("Error storing cart items in localStorage:", error);
+    }
+  }, [cartItems]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -55,23 +74,24 @@ export default function Page({ params }: any) {
         .from("prenda")
         .select("*")
         .eq("id", params.prenda);
-      setData(data);
+      if (data) {
+        setData(data);
+      }
     };
 
     fetchPosts();
   }, [params.prenda, setData]);
-
   return (
     <section className="flex mt-10 w-full items-center justify-center max-w-7xl mx-auto">
       <div className="grid gap-8 items-center justify-center ">
-        {data?.map((item: any) => (
-          <div key={item.id} className="flex flex-initial gap-8 p-4 rounded-lg">
+        {data?.map((item: ItemData) => (
+          <div key={item.id} className="flex flex-col gap-8 p-4 rounded-lg">
             <Image
               src={item.images}
               width={400}
               height={400}
               quality={80}
-              alt={item.name}
+              alt={item.title}
               className="rounded-lg shadow-md object-fit  mx-auto mb-4"
             />
             <Image
@@ -79,10 +99,10 @@ export default function Page({ params }: any) {
               width={400}
               height={400}
               quality={80}
-              alt={item.name}
+              alt={item.title}
               className="rounded-lg shadow-md object-fit  mx-auto mb-4"
             />
-            <form onSubmit={handleSubmit}>
+            <form>
               <p className="text-xl font-semibold mb-2">{item.title}</p>
 
               <p className="text-gray-500 text-sm mb-2">
@@ -119,12 +139,6 @@ export default function Page({ params }: any) {
                   Agregar al Carrito
                 </Button>
               </div>
-              {/* <Button
-                type="submit"
-                className="hover:underline w-full mt-2"
-              >
-                Comprar directamente
-              </Button> */}
             </form>
           </div>
         ))}

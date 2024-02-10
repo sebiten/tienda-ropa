@@ -6,10 +6,7 @@ import { TiShoppingCart } from "react-icons/ti";
 import { useAppContext } from "@/context";
 export default function NavBar() {
   const { cartItems } = useAppContext();
-  const itemCount = cartItems.length;
-
-  console.log(itemCount);
-
+  const totalItems = cartItems.length;
   return (
     <div className="sticky top-0 z-50 bg-inherit border-b">
       <nav className="md:flex justify-between w-full py-6 px-10 text-lg bg-transparent">
@@ -58,12 +55,11 @@ export default function NavBar() {
               </li>
               <li>
                 <Link
-                  className="flex gap-4 items-center hover:text-gray-400 hover:scale-95"
-                  href="#"
+                  className="flex items-center hover:text-gray-400 hover:scale-95"
+                  href="/carrito"
                 >
-                  <TiShoppingCart />
-                  <p className="text-white">{itemCount}</p>
-                  Cart
+                  <TiShoppingCart  size={24}/>
+                  <p className="text-white">{totalItems}</p>
                 </Link>
               </li>
             </div>

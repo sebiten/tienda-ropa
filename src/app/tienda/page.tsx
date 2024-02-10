@@ -1,11 +1,11 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAppContext } from "@/context";
 import supabase from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
 export default async function page() {
-
   const { data: prenda, error } = await supabase
     .from("prenda")
     .select("*")
@@ -15,8 +15,8 @@ export default async function page() {
   }
   return (
     <div>
-      <div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-4 py-8 mx-auto max-w-7xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-4 py-8 mx-auto max-w-7xl">
+        <Suspense fallback={<Skeleton/>}>
           {prenda?.map((item) => (
             <Link
               href={`/tienda/${item.id}`}
@@ -59,7 +59,7 @@ export default async function page() {
               </div>
             </Link>
           ))}
-        </div>
+        </Suspense>
       </div>
     </div>
   );

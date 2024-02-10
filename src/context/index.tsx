@@ -6,16 +6,15 @@ const AppContext = createContext<any>(undefined);
 export function AppWrapper({ children }: { children: React.ReactNode }) {
   // aqui abajo va la logica
   const [cartItems, setCartItems] = useState<any[]>([]);
-
-  const addToCart = (item: any) => {
-    setCartItems([...cartItems, item]);
-  };
+  const [loadingInitial, setLoadingInitial] = useState(true);
 
   return (
     <AppContext.Provider
       value={{
         cartItems,
-        addToCart,
+        setCartItems,
+        setLoadingInitial,
+        loadingInitial,
       }}
     >
       {children}
