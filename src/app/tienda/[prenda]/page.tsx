@@ -8,66 +8,10 @@ import { CartItem, ItemData } from "@/types/types";
 
 export default function Page({ params }: any) {
   const [data, setData] = useState<ItemData[]>([]);
-  const [selectedSize, setSelectedSize] = useState<string>("");
-  const { setCartItems, cartItems , setLoadingInitial} = useAppContext();
+  const { handleCartButton, selectedSize, handleSizeChange } = useAppContext();
+  const itemId = params.prenda;
 
-  const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSize(event.target.value);
-  };
-
-  const handleCartButton = () => {
-    const itemId = params.prenda;
-    const size = selectedSize;
-
-    if (!itemId || !size) {
-      console.error("Please select an item and size.");
-      return;
-    }
-
-    const existingItem: CartItem | undefined = cartItems.find(
-      (item: CartItem) => item.id === itemId && item.size === size
-    );
-
-    if (existingItem) {
-      setCartItems((prevCartItems: CartItem[]) =>
-        prevCartItems.map((item: CartItem) =>
-          item.id === itemId && item.size === size
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      );
-      console.log("Item quantity increased.");
-    } else {
-      setCartItems((prevCartItems: CartItem[]) => [
-        ...prevCartItems,
-        { id: itemId, size, quantity: 1 },
-      ]);
-      console.log("Item added to cart.");
-    }
-  };
-
-  useEffect(() => {
-    const storedCartItems = localStorage.getItem("cartItems");
-    if (storedCartItems) {
-      try {
-        const parsedCartItems: CartItem[] = JSON.parse(storedCartItems);
-        setCartItems(parsedCartItems);
-      } catch (error) {
-        console.error("Error parsing cart items from localStorage:", error);
-      }
-    }
-
-    setLoadingInitial(false);
-  }, [setCartItems, setLoadingInitial]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    } catch (error) {
-      console.error("Error storing cart items in localStorage:", error);
-    }
-  }, [cartItems]);
-
+  // Use effect to fetch data for a specific item (prenda) from Supabase on component mount
   useEffect(() => {
     const fetchPosts = async () => {
       const { data } = await supabase
@@ -81,11 +25,12 @@ export default function Page({ params }: any) {
 
     fetchPosts();
   }, [params.prenda, setData]);
+
   return (
     <section className="flex mt-10 w-full items-center justify-center max-w-7xl mx-auto">
       <div className="grid gap-8 items-center justify-center ">
         {data?.map((item: ItemData) => (
-          <div key={item.id} className="flex flex-col gap-8 p-4 rounded-lg">
+          <div key={item.id} className="flex gap-8 p-4 rounded-lg">
             <Image
               src={item.images}
               width={400}
@@ -104,6 +49,7 @@ export default function Page({ params }: any) {
             />
             <form>
               <p className="text-xl font-semibold mb-2">{item.title}</p>
+              <p className="text-xl font-semibold mb-2">${item.price}</p>
 
               <p className="text-gray-500 text-sm mb-2">
                 {getFormattedDate(item.created_at)}
@@ -116,7 +62,7 @@ export default function Page({ params }: any) {
                   onChange={handleSizeChange}
                   value={selectedSize}
                 >
-                  <option value="" disabled>
+                  <option value="" >
                     Selecciona un talle
                   </option>
                   {item.sizes ? (
@@ -133,7 +79,7 @@ export default function Page({ params }: any) {
                 </select>
                 <Button
                   type="button"
-                  onClick={handleCartButton}
+                  onClick={() => handleCartButton({ itemId: itemId })}
                   className="hover:underline"
                 >
                   Agregar al Carrito

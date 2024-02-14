@@ -1,16 +1,28 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useAppContext } from "@/context";
 import Image from "next/image";
 import { CartItem, ItemData } from "@/types/types";
-import supabase from "@/lib/utils";
+import supabase, { getFormattedDate } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import Spinner from "@/components/ui/Spinner";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const { cartItems, setCartItems, setLoadingInitial, loadingInitial } =
     useAppContext();
   const [cartFetchData, setCartFetchData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
-  const totalPrice = cartItems.reduce((total: number, item: any) => total + item.price * item.quantity, 0);
+  const allPrices = cartFetchData.map(
+    (item: CartItem, index: number) => item.price
+  );
+  const totalPrices = allPrices.reduce(
+    (total: number, price: number) => total + price,
+    0
+  );
+  const totalItems = cartFetchData.length;
+
+  console.log(cartFetchData);
 
   useEffect(() => {
     const fetchItemsFromLocalStorage = () => {
@@ -30,8 +42,6 @@ export default function Page() {
     fetchItemsFromLocalStorage();
   }, [setCartItems, setLoadingInitial]);
 
-
-
   useEffect(() => {
     const fetchProductDetails = async () => {
       if (!loadingInitial) {
@@ -50,10 +60,10 @@ export default function Page() {
           }
 
           const itemCountMap: Record<string, number> = {};
-          cartItems.forEach((item: ItemData) => {
+          cartItems.forEach((item: CartItem) => {
             itemCountMap[item.id] = itemCountMap[item.id]
-              ? itemCountMap[item.id] + 1
-              : 1;
+              ? itemCountMap[item.id] + item.quantity
+              : item.quantity;
           });
 
           const updatedData = data.flatMap((item) => {
@@ -70,55 +80,72 @@ export default function Page() {
         }
       }
     };
-
     fetchProductDetails();
   }, [cartItems, setCartItems, loadingInitial]);
 
   return (
-    <div className="flex mx-auto p-4">
-      {loading ? (
-        <p>Cargando...</p>
-      ) : cartFetchData.length > 0 ? (
-        <div className="grid grid-cols-3 gap-4">
-          {cartFetchData.map((item: ItemData, index: number) => (
-            <div key={index} className="p-4 border rounded shadow-md">
-              <div className="flex items-center mb-4">
-                <Image
-                  height={200}
-                  width={200}
-                  className="w-24 h-24 object-cover mr-4"
-                  src={item.images}
-                  alt={item.title}
-                />
-                <div className="flex flex-col">
-                  <h2 className="text-xl font-bold">{item.title}</h2>
-                  <p className="text-gray-600">{item.created_at}</p>
-                  <p className="text-gray-700">
-                    {item.description.slice(0, 50) + "..."}
-                  </p>
+    <section className="relative h-full">
+      {!loading && (
+        <div className="sticky dark:bg-slate-900 bg-slate-200 top-[10%] w-1/2 mx-auto z-40 flex justify-between border-b p-4 shadow-md rounded-lg ">
+          <div className="flex flex-col">
+            <p className="font-bold text-lg mb-2">
+              <span className="border-b-4 border-green-400 text-xl">
+                Checkout
+              </span>
+            </p>
+            <p className="font-bold text-lg mb-4">
+              <span>Cantidad total:</span>{" "}
+              <span className="">{totalItems}</span>
+            </p>
+          </div>
+          <div className="flex items-center mt-2 text-xl">
+            <p className="font-bold mr-2 light:text-white">Total:</p>
+            <p className="font-bold">${totalPrices}</p>
+            <Button className="bg-green-500 p-4 ml-4 font-bold  rounded-md">
+              Pagar
+            </Button>
+          </div>
+        </div>
+      )}
+      <div className="w-full flex flex-col p-4 -z-10">
+        <div>
+          {loading ? (
+            <Spinner />
+          ) : (
+            cartFetchData.map((item: ItemData, index: number) => (
+              <div
+                key={index}
+                className="p-4 max-w-6xl mx-auto border flex items-center justify-between w-full rounded shadow-md mb-4"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <Image
+                    height={200}
+                    width={200}
+                    className="w-24 h-24 object-cover mr-4"
+                    src={item.images}
+                    alt={item.title}
+                  />
+                  <div className="flex justify-between flex-col">
+                    <h2 className="text-xl font-bold">{item.title}</h2>
+                    <p className="text-gray-600">
+                      {getFormattedDate(item.created_at)}
+                    </p>
+                    <p className="text-gray-700">
+                      {item.description.slice(0, 50) + "..."}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <p className="text-gray-600 mr-2">Cantidad:{item.quantity}</p>
-
+                <div className="flex flex-col gap-4 items-center">
                   <button className="bg-red-500 text-white p-2 ml-2">
                     Eliminar
                   </button>
+                  <p className="font-bold text-xl">${item.price}</p>
                 </div>
-                <p className="text-gray-800">${item.price}</p>
               </div>
-            </div>
-          ))}
-          <div className="col-span-3 flex justify-end">
-            <p className="text-gray-800 font-bold">Total:</p>
-            <p className="text-gray-800 font-bold ml-2">${totalPrice}</p>
-            <button className="bg-green-500 text-white p-2 ml-4">Pagar</button>
-          </div>
+            ))
+          )}
         </div>
-      ) : (
-        <p>No hay productos en el carrito.</p>
-      )}
-    </div>
+      </div>
+    </section>
   );
 }

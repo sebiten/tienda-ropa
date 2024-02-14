@@ -1,5 +1,4 @@
-import {  Montserrat_Alternates } from "next/font/google";
-
+import { Montserrat_Alternates } from "next/font/google";
 
 export const siteFont = Montserrat_Alternates({
   subsets: ["latin"],

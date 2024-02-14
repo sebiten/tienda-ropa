@@ -20,5 +20,6 @@ export interface ItemData {
 export interface CartItem {
   id: string;
   size: string;
+  price: number;
   quantity: number;
 }
