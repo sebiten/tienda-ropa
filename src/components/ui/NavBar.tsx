@@ -14,9 +14,7 @@ export default function NavBar() {
       <nav className="md:flex justify-between w-full py-6 px-10 text-lg bg-transparent">
         <div className="flex items-center">
           <Link className="flex items-center justify-center" href="/">
-            <p className="uppercase text-2xl font-bold bg-gradient-to-r text-transparent bg-clip-text from-lime-600 to-purple-800">
-              Pilcheria Online
-            </p>
+            <p className="uppercase text-2xl font-bold ">Pilcheria Online</p>
           </Link>
         </div>
         <div className="w-full md:w-auto" id="menu">
