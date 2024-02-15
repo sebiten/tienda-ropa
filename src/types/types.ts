@@ -4,11 +4,13 @@ export interface AppContextType {
 }
 
 export interface ItemData {
+  prenda: ItemData;
   id: string;
   title: string;
   price: number;
   created_at: string;
   description: string;
+  inStock: number;
   images: string;
   imagestwo: string;
   sizes?: string;

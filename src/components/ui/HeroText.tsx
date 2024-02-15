@@ -35,13 +35,12 @@ export default function HeroText() {
           <Button className="font-bold">Explorar Ahora</Button>
         </Link>
       </div>
-
       <Carousel
         opts={{ align: "start", loop: true }}
         plugins={[Autoplay()]}
-        className="m-0 p-0 my-20 w-full max-w-4xl"
+        className=" my-20 w-full max-w-4xl"
       >
-        <CarouselContent className="w-full m-0 p-0">
+        <CarouselContent className="w-full">
           {pathsDeImagenes.map((path, index) => (
             <CarouselItem key={index}>
               <Image

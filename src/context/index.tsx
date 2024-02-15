@@ -10,11 +10,10 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string>("");
 
+
   const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSize(event.target.value);
   };
-
-  
 
   // Use effect to load cart items from localStorage on component mount
   useEffect(() => {
@@ -41,8 +40,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
     }
   }, [cartItems]);
 
-
-// Function to handle the cart button click
+  // Function to handle the cart button click
   const handleCartButton = ({ itemId }: { itemId: any }) => {
     // Extract item ID and selected size from the parameters
     const size = selectedSize;
