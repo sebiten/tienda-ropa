@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import NavBar from "@/components/ui/NavBar";
 import { Montserrat_Alternates } from "next/font/google";
 import { AppWrapper } from "@/context";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
 
 export const metadata: Metadata = {
   title: "Pilcheria online",
@@ -31,6 +32,7 @@ export default function RootLayout({
           <AppWrapper>
             <NavBar />
             {children}
+            {/* <Footer /> */}
           </AppWrapper>
         </ThemeProvider>
       </body>

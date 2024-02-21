@@ -1,31 +1,27 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppContext } from "@/context";
-import Image from "next/image";
 import { CartItem, ItemData } from "@/types/types";
 import supabase, { getFormattedDate } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
-import Spinner from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/button";
+import Spinner from "../components/Spinner";
+import Image from "next/image";
 
-export default function Page() {
+interface CheckoutPageProps {}
+
+const CheckoutPage: React.FC<CheckoutPageProps> = () => {
   const { cartItems, setCartItems, setLoadingInitial, loadingInitial } =
     useAppContext();
-  const [cartFetchData, setCartFetchData] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
-  const allPrices = cartFetchData.map(
-    (item: CartItem, index: number) => item.price
-  );
-  const totalPrices = allPrices.reduce(
-    (total: number, price: number) => total + price,
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const totalPrices: number = cartItems.reduce(
+    (total: number, item: ItemData) => total + (item.price || 0),
     0
   );
-  const totalItems = cartFetchData.length;
-
-  console.log(cartFetchData);
+  const totalItems: number = cartItems.length;
 
   useEffect(() => {
-    const fetchItemsFromLocalStorage = () => {
+    const fetchItemsFromLocalStorage = async () => {
       const storedItems = localStorage.getItem("cartItems");
       if (storedItems) {
         try {
@@ -39,49 +35,16 @@ export default function Page() {
       setLoadingInitial(false);
     };
 
-    fetchItemsFromLocalStorage();
+    fetchItemsFromLocalStorage().then(() => {
+      setLoading(false); // Actualiza el estado de loading después de cargar los elementos del carrito
+    });
   }, [setCartItems, setLoadingInitial]);
 
-  useEffect(() => {
-    const fetchProductDetails = async () => {
-      if (!loadingInitial) {
-        const ids = cartItems.map((item: any) => item.id);
-
-        try {
-          setLoading(true);
-          const { data, error } = await supabase
-            .from("prenda")
-            .select("*")
-            .in("id", ids);
-
-          if (error) {
-            console.error("Error fetching products:", error);
-            return;
-          }
-
-          const itemCountMap: Record<string, number> = {};
-          cartItems.forEach((item: CartItem) => {
-            itemCountMap[item.id] = itemCountMap[item.id]
-              ? itemCountMap[item.id] + item.quantity
-              : item.quantity;
-          });
-
-          const updatedData = data.flatMap((item) => {
-            return Array.from({ length: itemCountMap[item.id] }, () => ({
-              ...item,
-            }));
-          });
-
-          setCartFetchData(updatedData);
-        } catch (error) {
-          console.error("Error fetching product details:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchProductDetails();
-  }, [cartItems, setCartItems, loadingInitial]);
+  const handleDeleteItem = (index: number): void => {
+    const updatedCartItems: CartItem[] = [...cartItems];
+    updatedCartItems.splice(index, 1);
+    setCartItems(updatedCartItems);
+  };
 
   return (
     <section className="relative h-full">
@@ -112,31 +75,32 @@ export default function Page() {
           {loading ? (
             <Spinner />
           ) : (
-            cartFetchData.map((item: ItemData, index: number) => (
+            cartItems?.map((item: ItemData, index: number) => (
               <div
-                key={index}
+                key={`${item.id}-${item.size}`}
                 className="p-4 max-w-6xl mx-auto border flex items-center justify-between w-full rounded shadow-md mb-4"
               >
                 <div className="flex items-center justify-between mb-4">
                   <Image
-                    height={200}
-                    width={200}
+                    width={400}
+                    height={400}
                     className="w-24 h-24 object-cover mr-4"
                     src={item.images}
                     alt={item.title}
                   />
                   <div className="flex justify-between flex-col">
                     <h2 className="text-xl font-bold">{item.title}</h2>
-                    <p className="text-gray-600">
-                      {getFormattedDate(item.created_at)}
-                    </p>
+                    <h2 className="text-xl font-bold">{item.size}</h2>
                     <p className="text-gray-700">
                       {item.description.slice(0, 50) + "..."}
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 items-center">
-                  <button className="bg-red-500 text-white p-2 ml-2">
+                  <button
+                    className="bg-red-500 text-white p-2 ml-2"
+                    onClick={() => handleDeleteItem(index)}
+                  >
                     Eliminar
                   </button>
                   <p className="font-bold text-xl">${item.price}</p>
@@ -148,4 +112,6 @@ export default function Page() {
       </div>
     </section>
   );
-}
+};
+
+export default CheckoutPage;

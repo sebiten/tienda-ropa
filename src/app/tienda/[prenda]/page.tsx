@@ -100,7 +100,15 @@ export default function Page({ params }: any) {
                 </select>
                 <Button
                   type="button"
-                  onClick={() => handleCartButton({ itemId: itemId })}
+                  onClick={() =>
+                    handleCartButton({
+                      itemId: itemId,
+                      title: item.title,
+                      price: item.price,
+                      description: item.description,
+                      images: item.images,
+                    })
+                  }
                   className="hover:underline"
                 >
                   Agregar al Carrito

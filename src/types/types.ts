@@ -13,6 +13,7 @@ export interface ItemData {
   inStock: number;
   images: string;
   imagestwo: string;
+  size: string;
   sizes?: string;
   quantity?: number;
 

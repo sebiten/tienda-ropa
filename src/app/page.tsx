@@ -1,4 +1,4 @@
-import HeroText from "@/components/ui/HeroText";
+import HeroText from "./components/HeroText";
 
 export default async function Home() {
   return (

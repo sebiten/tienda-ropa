@@ -5,11 +5,9 @@ import { createContext, useState, useContext, useEffect } from "react";
 const AppContext = createContext<any>(undefined);
 
 export function AppWrapper({ children }: { children: React.ReactNode }) {
-  // aqui abajo va la logica
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string>("");
-
 
   const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSize(event.target.value);
@@ -41,21 +39,30 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
   }, [cartItems]);
 
   // Function to handle the cart button click
-  const handleCartButton = ({ itemId }: { itemId: any }) => {
+  const handleCartButton = ({
+    itemId,
+    title,
+    images,
+    description,
+    price,
+  }: {
+    itemId: any;
+    title: string;
+    images: string;
+    description: string;
+    price: number;
+  }) => {
     // Extract item ID and selected size from the parameters
     const size = selectedSize;
-
     // Check if both item ID and size are selected
     if (!itemId || !size) {
       console.error("Please select an item and size.");
       return;
     }
-
     // Find the existing item in the cart based on ID and size
     const existingItem: CartItem | undefined = cartItems.find(
       (item: CartItem) => item.id === itemId && item.size === size
     );
-
     // If the item already exists in the cart, increase its quantity
     if (existingItem) {
       setCartItems((prevCartItems: CartItem[]) =>
@@ -70,11 +77,20 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
       // If the item doesn't exist in the cart, add it with quantity 1
       setCartItems((prevCartItems: CartItem[]) => [
         ...prevCartItems,
-        { id: itemId, size, quantity: 1 },
+        {
+          id: itemId,
+          size,
+          quantity: 1,
+          title,
+          images,
+          description,
+          price,
+        },
       ]);
       console.log("Item added to cart.");
     }
   };
+
 
   return (
     <AppContext.Provider
